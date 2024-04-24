@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fetch Records Popup</title>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+</head>
+<body>
+
+<button id="fetchRecordsBtn">Fetch Records</button>
+
+<div id="popupContainer" style="display: none;">
+  <div id="popupContent"></div>
+</div>
+
+<script>
+$(document).ready(function(){
+  $('#fetchRecordsBtn').click(function(){
+    // Make AJAX request to fetch records
+    $.ajax({
+      url: 'http://127.0.0.1:5000/students',
+      method: 'GET',
+      success: function(response){
+        // Handle the response
+        var records = response.records;
+        
+        // Create HTML content with fetched records
+        var html = '<ul>';
+        $.each(records, function(index, record){
+          html += '<li>' + record.name + ': ' + record.value + '</li>';
+        });
+        html += '</ul>';
+        
+        // Show HTML content in a popup
+        $('#popupContent').html(html);
+        $('#popupContainer').dialog({
+          title: 'Fetched Records',
+          width: 400,
+          modal: true,
+          buttons: {
+            Close: function(){
+              $(this).dialog('close');
+            }
+          }
+        });
+      },
+      error: function(){
+        alert('Error fetching records.');
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
